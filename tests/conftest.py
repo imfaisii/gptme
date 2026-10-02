@@ -759,6 +759,7 @@ def server_thread(monkeypatch):
 
 @pytest.fixture
 def client(monkeypatch):
+    pytest.importorskip("flask", reason="flask not installed; install -E server")
     from gptme.server.app import create_app  # fmt: skip
 
     # Disable auth for the generic test client so existing tests don't need tokens.
