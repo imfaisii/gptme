@@ -21,6 +21,7 @@ import flask
 from pydantic import BaseModel, Field, ValidationError
 
 from ..tools import get_available_tools
+from .api_v2_common import _is_debug_errors_enabled
 from .auth import require_auth
 from .openapi_docs import ErrorResponse, api_doc_simple
 
@@ -266,7 +267,8 @@ def list_tools():
         )
     except Exception as e:
         logger.exception("Error listing tools")
-        return flask.jsonify({"error": str(e)}), 500
+        error_msg = str(e) if _is_debug_errors_enabled() else "Internal server error"
+        return flask.jsonify({"error": error_msg}), 500
 
 
 _MAX_REGEX_LEN = 200
@@ -353,4 +355,5 @@ def query_tools():
         return flask.jsonify({"error": str(e)}), 400
     except Exception as e:
         logger.exception("Error querying tools")
-        return flask.jsonify({"error": str(e)}), 500
+        error_msg = str(e) if _is_debug_errors_enabled() else "Internal server error"
+        return flask.jsonify({"error": error_msg}), 500
